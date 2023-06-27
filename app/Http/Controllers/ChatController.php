@@ -33,7 +33,7 @@ class ChatController extends Controller
 
         $message = Message::create([
             'message' => $request->message,
-            'message_from' => intval($request->message_from),
+            'message_from' => Auth::user()->id,
             'message_to' => intval($request->message_to)
         ]);
 
@@ -47,7 +47,17 @@ class ChatController extends Controller
     
     public function show($id)
     {
-        //
+        return MessageResource::collection(
+            Message::where(function ($query) use ($id) {
+                $query->where(function ($query) use ($id) {
+                    $query->where('message_from', Auth::user()->id)
+                        ->where('message_to', $id);
+                })->orWhere(function ($query) use ($id) {
+                    $query->where('message_from', $id)
+                        ->where('message_to', Auth::user()->id);
+                });
+            })->get()
+        ); 
     }
 
     
