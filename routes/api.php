@@ -17,6 +17,8 @@ Route::post('/register', [AuthController::class, 'register']);
 // protected routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::resource('chats', ChatController::class);
+    Route::get('convo', [ChatController::class, 'convo']);
+    Route::get('convo_message/{id}', [ChatController::class, 'convo_message']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

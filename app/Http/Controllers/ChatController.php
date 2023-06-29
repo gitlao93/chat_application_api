@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\MessageRequest;
+use App\Http\Resources\ConvoResource;
 use App\Http\Resources\MessageResource;
 
 class ChatController extends Controller
@@ -21,9 +23,29 @@ class ChatController extends Controller
     }
 
     
-    public function create()
+    public function convo()
     {
-        //
+        return User::whereIn('id', function ($query) {
+            $query->select('message_to')
+                ->from('messages')
+                ->where('message_from', auth()->id())
+                ->groupBy('message_to');
+        })
+        ->get(['id', 'name', 'email']);
+        
+    }
+
+    public function convo_message($id) {
+        return 
+            Message::where(function ($query) use ($id) {
+                $query->where('message_from', Auth::user()->id)
+                      ->where('message_to', $id);
+            })->orWhere(function ($query) use ($id) {
+                $query->where('message_to', Auth::user()->id)
+                      ->where('message_from', $id);
+            })->get(['id', 'message', 'message_from','message_to', 'created_at', 'updated_at'])
+            ->toArray();
+        
     }
 
     
