@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model
+class GroupMember extends Model
 {
     use HasFactory;
-    protected $primaryKey = 'message_id';
+    protected $primaryKey = 'membership_id';
 }
