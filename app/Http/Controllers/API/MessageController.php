@@ -20,7 +20,7 @@ class MessageController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -79,6 +79,19 @@ class MessageController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function conversation($id)
+    {
+        $messages = Message::whereHas('convo', function ($query) use ($id) {
+            $query->where('convo_id', $id);
+        })->get();
+
+        if ($messages->isEmpty()) {
+            return response()->json(['error' => 'No messages found for the given conversation ID'], 404);
+        }
+    
+        return response()->json(['messages' => $messages], 200);
     }
 
     /**

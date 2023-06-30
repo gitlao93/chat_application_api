@@ -21,9 +21,8 @@ Route::post('/store', [AuthController::class, 'store']);
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::apiResource('message', MessageController::class);
     Route::post('message/{id}', [MessageController::class, 'store']);
+    Route::get('conversation/{id}', [MessageController::class, 'conversation']);
     Route::apiResource('convo', ConvoController::class);
     Route::apiResource('group', GroupController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
-
-

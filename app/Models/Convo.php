@@ -15,4 +15,6 @@ class Convo extends Model
     {
         return $this->belongsTo(Group::class, 'convo_id');
     }
+
+
 }
