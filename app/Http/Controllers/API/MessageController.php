@@ -29,34 +29,37 @@ class MessageController extends Controller
     public function store(Request $request, $id)
     {
         $senderId = Auth::user()->user_id;
+        $senderName = Auth::user()->name;
         $receiverId = $id;
         $receiverName = User::where('user_id', $receiverId)->value('name');
+        
+        $group = Group::join('group_members as member1', 'member1.group_id', '=', 'groups.group_id')
+                ->join('group_members as member2', 'member2.group_id', '=', 'groups.group_id')
+                ->where('member1.user_id', $senderId)
+                ->where('member2.user_id', $receiverId)
+                ->select('groups.*')
+                ->first();
 
-        // Check if receiver and sender belong to the same group
-        $group = Group::whereHas('members', function ($query) use ($senderId, $receiverId) {
-            $query->where(function ($subQuery) use ($senderId, $receiverId) {
-                $subQuery->where('user_id', $senderId)
-                    ->orWhere('user_id', $receiverId);
-            });
-        })->first();
+        
 
         if (!$group) {
             // Create a new group
-            $group = new Group();
-            $group->convo_id = $this->createConvo($receiverName);
-            $group->group_name = $receiverName;
-            $group->save();
+            $group = Group::create([
+                'group_name' => $receiverName,
+                'convo_id' => $this->createConvo($receiverName,$senderName)
+            ]);
+            
             // Add sender and receiver to the group members
             $this->addMemberToGroup($group->group_id, $senderId);
             $this->addMemberToGroup($group->group_id, $receiverId);
         }
 
         // Create and save the message
-        $message = new Message();
-        $message->convo_id = $group->convo_id;
-        $message->sender_id = $senderId;
-        $message->content = $request->content;
-        $message->save();
+        $message = Message::create([
+            'sender_id' => $senderId,
+            'content' => $request->content,
+            'convo_id' => $group->convo_id
+        ]);
 
         if (!$message) {
             return $this->error([], 'Failed to save the message.', 500);
@@ -103,11 +106,12 @@ class MessageController extends Controller
     }
 
     //create convo
-    private function createConvo($receiverName)
+    private function createConvo($receiverName,$senderName)
     {
-        $convo = new Convo();
-        $convo->convo_name = $receiverName;
-        $convo->save();
+        $convoName = $senderName . '\'s and ' . $receiverName . '\'s Convo';
+        $convo = Convo::create([
+            'convo_name' => $convoName
+        ]);
 
         return $convo->convo_id;
     }

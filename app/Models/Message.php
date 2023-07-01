@@ -10,8 +10,23 @@ class Message extends Model
 {
     use HasFactory;
     protected $primaryKey = 'message_id';
+    protected $fillable = [
+        'sender_id',
+        'content',
+        'convo_id'
+    ];
 
-    public function convo(){
-        return $this->belongsTo(Convo::class, 'convo_id');
+    // public function convo(){
+    //     return $this->belongsTo(Convo::class, 'convo_id');
+    // }
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
+    }
+    
+    public function convo()
+    {
+        return $this->belongsTo(Convo::class);
     }
 }
