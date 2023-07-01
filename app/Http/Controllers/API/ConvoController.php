@@ -13,7 +13,7 @@ class ConvoController extends Controller
 {
     use HttpResponses;
     /**
-     * Display a listing of the resource.
+     * Display a listing of Conversations.
      */
     public function index()
     {

@@ -24,7 +24,7 @@ class MessageController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store message.
      */
     public function store(Request $request, $id)
     {
@@ -80,7 +80,7 @@ class MessageController extends Controller
     {
         //
     }
-
+    // show messages in a convo
     public function conversation($id)
     {
         $messages = Message::whereHas('convo', function ($query) use ($id) {
@@ -102,7 +102,7 @@ class MessageController extends Controller
         //
     }
 
-
+    //create convo
     private function createConvo($receiverName)
     {
         $convo = new Convo();
@@ -111,7 +111,7 @@ class MessageController extends Controller
 
         return $convo->convo_id;
     }
-
+    // create convo
     private function addMemberToGroup($groupId, $userId)
     {
         $member = new GroupMember();

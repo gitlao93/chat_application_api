@@ -40,7 +40,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Register User.
      */
     public function store(StoreUserRequest $request)
     {
