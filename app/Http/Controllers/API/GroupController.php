@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\Group;
+use App\Models\GroupMember;
 use Illuminate\Http\Request;
+use App\Traits\HttpResponses;
+use App\Http\Controllers\Controller;
 
 class GroupController extends Controller
 {
+    use HttpResponses;
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +40,18 @@ class GroupController extends Controller
      */
     public function show($id)
     {
-        //
+        $groupIdList = Group::where('convo_id', $id)->pluck('group_id');
+
+        $groupMembers = GroupMember::whereIn('group_id', $groupIdList)
+                                    ->where('user_id', '!=', auth()->user()->user_id)
+                                    ->get();
+
+        if ($groupMembers->isEmpty()) {
+            return response()->json(['error' => 'No Members'], 404);
+        }
+    
+        return response()->json(['members' => $groupMembers], 200);
+
     }
 
     /**

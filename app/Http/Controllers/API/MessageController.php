@@ -95,6 +95,35 @@ class MessageController extends Controller
         return response()->json(['messages' => $messages], 200);
     }
 
+    public function showConvoWithUser($id){
+
+        $user_id = Auth::user()->user_id;
+
+        $convos = Convo::join('groups', 'convos.convo_id', '=', 'groups.convo_id')
+        ->join('group_members as gm1', 'groups.group_id', '=', 'gm1.group_id')
+        ->join('group_members as gm2', 'groups.group_id', '=', 'gm2.group_id')
+        ->where(function ($query) use ($id, $user_id) {
+            $query->where('gm1.user_id', $id)
+                ->where('gm2.user_id', $user_id);
+        })
+        // ->orWhere(function ($query) use ($userId, $authenticatedUserId) {
+        //     $query->where('gm1.user_id', $authenticatedUserId)
+        //         ->where('gm2.user_id', $userId);
+        // })
+        ->select('convos.*')
+        ->first();
+
+        $messages = Message::where('convo_id', $convos->convo_id)->get();
+
+        if ($messages->isEmpty()) {
+            return response()->json(['error' => 'No messages found for the given conversation ID'], 404);
+        }
+    
+        return response()->json(['messages' => $messages], 200);
+    
+
+    }
+
     /**
      * Remove the specified resource from storage.
      */
