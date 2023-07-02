@@ -52,7 +52,17 @@ class ConvoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $conversation = Convo::find($id);
+        if (!$conversation) {
+            // Conversation not found
+            return $this->error(['message' => 'Convo not found'], 'Convo not found', 401);;
+        }
+        
+        $conversation->convo_name = $request->convo_name;
+        $conversation->update();
+        
+        // Conversation updated successfully
+        return $this->success(['message' => 'Convo edites'], 'Message sent successfully');
     }
 
     /**

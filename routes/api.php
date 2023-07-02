@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::apiResource('users', UserController::class);
     Route::post('message/{id}', [MessageController::class, 'store']);
     Route::get('user-conversation/{id}', [MessageController::class, 'showConvoWithUser']);
+    Route::get('searchUserByName', [UserController::class, 'searchUserByName']);
     Route::get('conversation/{id}', [MessageController::class, 'conversation']);
     Route::apiResource('convo', ConvoController::class);
     Route::apiResource('group', GroupController::class);

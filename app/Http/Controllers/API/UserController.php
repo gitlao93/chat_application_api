@@ -38,12 +38,23 @@ class UserController extends Controller
         //
     }
 
+    public function show()
+    {
+        
+    }
+
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function searchUserByName(Request $request)
     {
-        //
+        $user = User::where('name', 'LIKE', '%'.$request->name.'%')->get();
+
+        if ($user->isEmpty()) {
+            return response()->json(['error' => 'No user'], 404);
+        }
+    
+        return response()->json(['users' => $user], 200);
     }
 
     /**
