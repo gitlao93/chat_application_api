@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Models\GroupMember;
 use Illuminate\Http\Request;
 use App\Traits\HttpResponses;
+use App\Events\MessageNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,7 +65,8 @@ class MessageController extends Controller
         if (!$message) {
             return $this->error([], 'Failed to save the message.', 500);
         }
-    
+       
+        event(new MessageNotification($message));
         return $this->success(['message' => 'Message sent successfully'], 'Message sent successfully', 200);
     }
 

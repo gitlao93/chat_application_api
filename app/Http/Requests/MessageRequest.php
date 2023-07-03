@@ -25,7 +25,6 @@ class MessageRequest extends FormRequest
     {
         return [
             'message' => ['required', 'string'],
-            'message_from' => ['required', 'exists:users,id'],
             'message_to' => ['required', 'exists:users,id']
         ];
     }

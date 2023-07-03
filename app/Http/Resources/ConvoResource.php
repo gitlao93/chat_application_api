@@ -14,11 +14,12 @@ class ConvoResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        return  [
             'id' => (string)$this->id,
-            'name' => $this->name,
-            'email' => (string)$this->email
+            'attributes' => [
+                'name' => $this->name,
+                'email' => $this->email
             ]
-        ;
+        ];
     }
 }

@@ -30,4 +30,5 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::apiResource('group', GroupController::class);
     Route::apiResource('group-members', GroupController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/convo', [ConvoController::class, 'index']);
 });
