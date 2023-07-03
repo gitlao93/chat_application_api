@@ -16,3 +16,9 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('notification', function ($user) {
+    // Add your authorization logic for the notification channel here
+    // For example, you can check if the user is authenticated
+    return Auth::check();
+});
